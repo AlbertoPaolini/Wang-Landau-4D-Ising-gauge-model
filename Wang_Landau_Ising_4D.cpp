@@ -12,9 +12,9 @@
 #include <thread>
 
 #define Accuracy 0.9
-#define Ns 8
-#define Nz 8
-#define Nt 8
+#define Ns 6
+#define Nz 6
+#define Nt 6
 
 using namespace std;
 
@@ -77,12 +77,12 @@ bool Flat(vector<int> H){
         bin++;
 
         if(H[i]< min) min = H[i];
-        if(H[i] == 0) num_zero++;
+        //if(H[i] == 0) num_zero++;
     }
 
     Average = Average / (double)bin;
     
-    //cout<< (double)min/Average <<endl;
+    //cout<< (double)min/Average <<" "<< num_zero<<endl;
     //cout<< num_zero <<endl;
 
 
@@ -104,11 +104,6 @@ void lattice_creation_minus_frozen(vector< vector<int> > &lattice, vector< vecto
               element.push_back(-1); // This is the link along the direction 1 from the site of coordinate (i,j,k,l)
               element.push_back(-1); // This is the link along the direction 2 from the site of coordinate (i,j,k,l)
               element.push_back(-1); // This is the link along the direction 3 from the site of coordinate (i,j,k,l)
-              
-            //   element.push_back(1); // This is the link along the direction 0 from the site of coordinate (i,j,k,l)
-            //   element.push_back(1); // This is the link along the direction 1 from the site of coordinate (i,j,k,l)
-            //   element.push_back(1); // This is the link along the direction 2 from the site of coordinate (i,j,k,l)
-            //   element.push_back(1); // This is the link along the direction 3 from the site of coordinate (i,j,k,l)
 
               lattice.push_back(element);
 
@@ -157,11 +152,6 @@ void lattice_creation_frozen(vector< vector<int> > &lattice, vector< vector<int>
               element.push_back(1); // This is the link along the direction 1 from the site of coordinate (i,j,k,l)
               element.push_back(1); // This is the link along the direction 2 from the site of coordinate (i,j,k,l)
               element.push_back(1); // This is the link along the direction 3 from the site of coordinate (i,j,k,l)
-              
-            //   element.push_back(1); // This is the link along the direction 0 from the site of coordinate (i,j,k,l)
-            //   element.push_back(1); // This is the link along the direction 1 from the site of coordinate (i,j,k,l)
-            //   element.push_back(1); // This is the link along the direction 2 from the site of coordinate (i,j,k,l)
-            //   element.push_back(1); // This is the link along the direction 3 from the site of coordinate (i,j,k,l)
 
               lattice.push_back(element);
 
@@ -251,11 +241,6 @@ void latticeRandom_creation(vector< vector<int> > &lattice, vector< vector<int> 
     }
   }
   
-//   for(int i=0; i<lattice.size(); i++){
-//     for(int direction = 0; direction < 4; direction ++){
-//       lattice[map_nn[i][direction]][4 + direction] = lattice[i][direction];
-//     }
-//   }
 
 }
 
@@ -350,8 +335,9 @@ void Wang_Landau_step(vector<double> &log_g, vector< vector<int> > &Lattice, vec
     int current_energy = sum_plaq(Plaquette);
     int final_index;
     int lattice_size = Lattice.size();
-    
-    for(int iteration = 0; iteration < 200000000; iteration++){
+    int ITERATION = Ns * Ns * Nz * Nt * 1000000;
+
+    for(int iteration = 0; iteration < ITERATION; iteration++){
                 
         int i = Random_int(0, lattice_size-1);
                 
@@ -391,8 +377,9 @@ void Wang_Landau_step(vector<double> &log_g, vector< vector<int> > &Lattice, vec
 }
 //*****************************************************************************************************
 
-void Wang_Landau(vector<double> &log_g, vector< vector<int> > &Lattice, vector< vector<int> > &Lattice2, vector< vector<int> > &Lattice3, vector< vector<int> > &Lattice4, 
-    vector< int > &Plaquette, vector< int > &Plaquette2, vector< int > &Plaquette3, vector< int > &Plaquette4, int Num_Energy_levels, 
+void Wang_Landau(vector<double> &log_g, vector< vector<int> > &Lattice, vector< vector<int> > &Lattice2, vector< vector<int> > &Lattice3, vector< vector<int> > &Lattice4,
+    vector< vector<int> > &Lattice5, vector< vector<int> > &Lattice6, vector< int > &Plaquette, vector< int > &Plaquette2,
+    vector< int > &Plaquette3, vector< int > &Plaquette4, vector< int > &Plaquette5, vector< int > &Plaquette6, int Num_Energy_levels, 
     vector< vector< vector< int > > > &link_to_plaquette){
 
     long double Threshold = 1.000000001;
@@ -401,12 +388,12 @@ void Wang_Landau(vector<double> &log_g, vector< vector<int> > &Lattice, vector< 
     int lattice_size = Lattice.size();
     int current_energy = sum_plaq(Plaquette);
     int final_index;
-    vector<double> log_g1(Num_Energy_levels, 0.0), log_g2(Num_Energy_levels, 0.0), log_g3(Num_Energy_levels, 0.0), log_g4(Num_Energy_levels, 0.0);
+    vector<double> log_g1(Num_Energy_levels, 0.0), log_g2(Num_Energy_levels, 0.0), log_g3(Num_Energy_levels, 0.0), log_g4(Num_Energy_levels, 0.0), log_g5(Num_Energy_levels, 0.0), log_g6(Num_Energy_levels, 0.0);
 
     while(f > Threshold){
-        cout<<f<<endl;
+        cout<<setprecision(12)<<f<<endl;
         vector<int> H(Num_Energy_levels, 0);
-        vector<int> H1(Num_Energy_levels, 0), H2(Num_Energy_levels, 0), H3(Num_Energy_levels, 0), H4(Num_Energy_levels, 0);
+        vector<int> H1(Num_Energy_levels, 0), H2(Num_Energy_levels, 0), H3(Num_Energy_levels, 0), H4(Num_Energy_levels, 0), H5(Num_Energy_levels, 0), H6(Num_Energy_levels, 0);
         H_Flat = false;
         
         while(H_Flat == false){
@@ -414,13 +401,17 @@ void Wang_Landau(vector<double> &log_g, vector< vector<int> > &Lattice, vector< 
             thread t2(Wang_Landau_step, ref(log_g2), ref(Lattice2), ref(Plaquette2), Num_Energy_levels, ref(link_to_plaquette), ref(H2), f);
             thread t3(Wang_Landau_step, ref(log_g3), ref(Lattice3), ref(Plaquette3), Num_Energy_levels, ref(link_to_plaquette), ref(H3), f);
             thread t4(Wang_Landau_step, ref(log_g4), ref(Lattice4), ref(Plaquette4), Num_Energy_levels, ref(link_to_plaquette), ref(H4), f);
+            thread t5(Wang_Landau_step, ref(log_g5), ref(Lattice5), ref(Plaquette5), Num_Energy_levels, ref(link_to_plaquette), ref(H5), f);
+            thread t6(Wang_Landau_step, ref(log_g6), ref(Lattice6), ref(Plaquette6), Num_Energy_levels, ref(link_to_plaquette), ref(H6), f);
             t1.join();
             t2.join();
             t3.join();
             t4.join();
+            t5.join();
+            t6.join();
 
             for(int h = 0; h< H1.size(); h++){
-                H[h] = H1[h] + H2[h] + H3[h] + H[4];
+                H[h] = H1[h] + H2[h] + H3[h] + H4[h] + H5[h] + H6[h];
             }
             H_Flat = Flat(H);
         }
@@ -430,7 +421,7 @@ void Wang_Landau(vector<double> &log_g, vector< vector<int> > &Lattice, vector< 
     }
 
     for(int i = 0; i<log_g1.size(); i++){
-        log_g[i] = (log_g1[i] + log_g2[i] + log_g3[i] + log_g[4])/4.0; 
+        log_g[i] = (log_g1[i] + log_g2[i] + log_g3[i] + log_g4[i] + log_g5[i] + log_g6[i])/6.0;
     }
 
 }
@@ -498,23 +489,27 @@ int main(){
     ofstream energy_file;
     energy_file.open("energy.txt");
 
-    vector< vector<int> > Lattice, Lattice2, Lattice3, Lattice4;
+    vector< vector<int> > Lattice, Lattice2, Lattice3, Lattice4, Lattice5, Lattice6;
     vector< vector<int> > NN_Map;
 
     lattice_creation_frozen(Lattice, NN_Map);
-    lattice_creation_minus_frozen(Lattice2, NN_Map);
-    latticeRandom_creation(Lattice3, NN_Map);
-    latticeRandom_creation(Lattice4, NN_Map);
-    vector< int > Plaquette, Plaquette2, Plaquette3, Plaquette4;
+    lattice_creation_frozen(Lattice2, NN_Map);
+    lattice_creation_minus_frozen(Lattice3, NN_Map);
+    lattice_creation_minus_frozen(Lattice4, NN_Map);
+    latticeRandom_creation(Lattice5, NN_Map);
+    latticeRandom_creation(Lattice6, NN_Map);
+    vector< int > Plaquette, Plaquette2, Plaquette3, Plaquette4, Plaquette5, Plaquette6;
     vector< vector< vector< int > > > link_to_plaquette;
     plaquette_creation(Lattice, NN_Map, Plaquette, link_to_plaquette);
     plaquette_creation(Lattice2, NN_Map, Plaquette2, link_to_plaquette);
     plaquette_creation(Lattice3, NN_Map, Plaquette3, link_to_plaquette);
     plaquette_creation(Lattice4, NN_Map, Plaquette4, link_to_plaquette);
+    plaquette_creation(Lattice4, NN_Map, Plaquette5, link_to_plaquette);
+    plaquette_creation(Lattice4, NN_Map, Plaquette6, link_to_plaquette);
 
     int Num_Energy_levels = 2 * 6 * Lattice.size() + 1;
     vector<double> log_g(Num_Energy_levels, 0.0); 
-    Wang_Landau(log_g, Lattice, Lattice2, Lattice3, Lattice4, Plaquette, Plaquette2, Plaquette3, Plaquette4, Num_Energy_levels, link_to_plaquette);
+    Wang_Landau(log_g, Lattice, Lattice2, Lattice3, Lattice4, Lattice5, Lattice6, Plaquette, Plaquette2, Plaquette3, Plaquette4, Plaquette5, Plaquette6, Num_Energy_levels, link_to_plaquette);
     
     double beta = 0.05;
     for( int measurements = 0; measurements < 100 ; measurements++){
